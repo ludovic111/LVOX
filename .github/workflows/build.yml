@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-14
@@ -41,3 +44,4 @@ jobs:
             build/LVOX_artefacts/Release/LVOX-VST3-${{ steps.version.outputs.tag }}.zip
             build/LVOX_artefacts/Release/LVOX-AU-${{ steps.version.outputs.tag }}.zip
           make_latest: true
+          overwrite_files: true

@@ -52,6 +52,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
         g->addChild (std::make_unique<AudioParameterFloat> (ParameterID { ParamIDs::deessFrequency, 1 }, "De-Esser Freq", makeFreqRange (2000.0f, 12000.0f), 6500.0f, AudioParameterFloatAttributes().withLabel ("Hz")));
         g->addChild (std::make_unique<AudioParameterFloat> (ParameterID { ParamIDs::deessThreshold, 1 }, "De-Esser Threshold", NormalisableRange<float> (-40.0f, 0.0f, 0.1f), -20.0f, AudioParameterFloatAttributes().withLabel ("dB")));
         g->addChild (std::make_unique<AudioParameterFloat> (ParameterID { ParamIDs::deessReduction, 1 }, "De-Esser Reduction", NormalisableRange<float> (0.0f, 24.0f, 0.1f), 6.0f, AudioParameterFloatAttributes().withLabel ("dB")));
+        g->addChild (std::make_unique<AudioParameterFloat> (ParameterID { ParamIDs::deessAttack, 1 },    "De-Esser Attack",    NormalisableRange<float> (0.1f, 10.0f, 0.1f, 0.5f), 0.5f, AudioParameterFloatAttributes().withLabel ("ms")));
+        g->addChild (std::make_unique<AudioParameterFloat> (ParameterID { ParamIDs::deessRelease, 1 },   "De-Esser Release",   NormalisableRange<float> (5.0f, 100.0f, 0.1f, 0.5f), 20.0f, AudioParameterFloatAttributes().withLabel ("ms")));
         g->addChild (std::make_unique<AudioParameterBool>  (ParameterID { ParamIDs::deessListen, 1 },    "De-Esser Listen", false));
         groups.push_back (std::move (g));
     }

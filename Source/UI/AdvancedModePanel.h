@@ -26,6 +26,15 @@ public:
 
     MeterComponent& getInputMeter()  { return inputMeter; }
     MeterComponent& getOutputMeter() { return outputMeter; }
+    GainReductionMeter& getGRMeter() { return compPanel.getGRMeter(); }
+
+    void setModuleActivity (int index, float level)
+    {
+        ModulePanel* panels[] = { &gatePanel, &hpfPanel, &deesserPanel, &eqPanel,
+                                   &compPanel, &satPanel, &revPanel, &dlyPanel, &limPanel };
+        if (index >= 0 && index < 9)
+            panels[index]->setActivityLevel (level);
+    }
 
 private:
     NoiseGatePanel   gatePanel;

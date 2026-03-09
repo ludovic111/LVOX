@@ -12,6 +12,7 @@ CompressorPanel::CompressorPanel (juce::AudioProcessorValueTreeState& apvts)
     addAndMakeVisible (scFreqKnob);
     addAndMakeVisible (mixKnob);
     addAndMakeVisible (scActiveToggle);
+    addAndMakeVisible (grMeter);
 
     thresholdKnob.attach (apvts, ParamIDs::compThreshold);
     ratioKnob.attach     (apvts, ParamIDs::compRatio);
@@ -41,6 +42,7 @@ void CompressorPanel::layoutControls (juce::Rectangle<int> area)
     fb.items.add (juce::FlexItem (scFreqKnob)    .withWidth (80).withHeight (90));
     fb.items.add (juce::FlexItem (mixKnob)       .withWidth (80).withHeight (90));
     fb.items.add (juce::FlexItem (scActiveToggle).withWidth (80).withHeight (24));
+    fb.items.add (juce::FlexItem (grMeter)      .withWidth (20).withHeight (80));
 
     fb.performLayout (area);
 }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(LVOX VERSION 1.0.0 LANGUAGES CXX)
+project(LVOX VERSION 1.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -54,6 +54,7 @@ target_sources(LVOX PRIVATE
     Source/UI/Panels/DelayPanel.cpp
     Source/UI/Panels/SendBusPanel.cpp
     Source/UI/Panels/LimiterPanel.cpp
+    Source/UI/Components/EQCurveComponent.h
     Source/UI/Components/GlossyKnob.cpp
     Source/UI/Components/GlowButton.cpp
     Source/UI/Components/MacroKnob.cpp

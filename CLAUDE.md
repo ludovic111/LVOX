@@ -111,10 +111,22 @@ All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
 - Standalone app: `open build/LVOX_artefacts/Debug/Standalone/LVOX.app`
 - DAW: load VST3 in FL Studio, AU in Logic Pro
 
+## Recent Feature Additions
+- **Parameter Smoothing**: Input/output gain use SmoothedValue (20ms ramp). Saturation drive/output/mix also smoothed.
+- **EQ Frequency Response Curve**: Real-time magnitude response visualization in EQ panel (512 log-spaced points, 30Hz refresh)
+- **Compressor Gain Reduction Meter**: Amber inverted meter in compressor panel, polls at 30Hz
+- **Delay Feedback Filters**: Now properly applied per-sample in the feedback path (were declared but unused)
+- **De-Esser Attack/Release**: Configurable params (attack 0.1-10ms, release 5-100ms) replacing hardcoded 10ms release
+- **Limiter Look-Ahead**: 1ms delay-based look-ahead for proper peak limiting. Reports latency via getLatencySamples()
+- **Frequency-Dependent Saturation**: Pre-emphasis/de-emphasis filters add tape-like frequency character. Different curves per saturation type.
+- **Dattorro Plate Reverb**: Replaced JUCE built-in Schroeder reverb with custom Dattorro plate algorithm for denser, more natural tails
+- **A/B Comparison**: Toggle between two parameter states. "A>B" copies current to both slots.
+- **Undo/Redo**: UndoManager connected to APVTS, Cmd+Z/Cmd+Shift+Z in editor
+- **Per-Module Activity LEDs**: 6px green glowing dots in each module panel header
+- **Knob Value Display**: Shows exact value with units during drag, auto-hides after 1s
+
 ## Known Issues / Future Work
-- Parameter smoothing (SmoothedValue) not yet applied — may cause clicks on fast param changes
-- EQ panel doesn't have frequency response curve visualization yet
-- Compressor panel doesn't show gain reduction meter yet
-- Delay feedback filters are declared but not fully integrated in the feedback path
 - No universal binary build tested yet (needs `-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"`)
 - Factory presets are created on first run by setting params and saving — ideally should be embedded as binary data
+- EQ curve doesn't have draggable band handles yet
+- Saturation oversampling latency not reported (only limiter look-ahead is)

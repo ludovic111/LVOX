@@ -25,12 +25,22 @@ public:
     void setHostBPM (double bpm);
 
     CompressorModule& getCompressor() { return compressor; }
+    LimiterModule& getLimiter() { return limiter; }
+    float getModuleOutputLevel (int index) const
+    {
+        if (index >= 0 && index < 9)
+            return modules[index]->getOutputLevel();
+        return 0.0f;
+    }
 
 private:
     juce::AudioProcessorValueTreeState& apvts;
 
     std::atomic<float>* inputGainParam  = nullptr;
     std::atomic<float>* outputGainParam = nullptr;
+
+    juce::SmoothedValue<float> smoothedInputGain  { 1.0f };
+    juce::SmoothedValue<float> smoothedOutputGain { 1.0f };
     std::atomic<float>* sendModeParam   = nullptr;
     std::atomic<float>* sendRevLevelParam = nullptr;
     std::atomic<float>* sendDlyLevelParam = nullptr;

@@ -26,11 +26,24 @@ void ModulePanel::paint (juce::Graphics& g)
         g.drawText (juce::String (moduleIndex), badgeBounds, juce::Justification::centred);
     }
 
+    // Activity LED (6px circle)
+    {
+        float ledX = bounds.getWidth() - 96.0f;
+        float ledY = 11.0f;
+        float ledSize = 6.0f;
+        float ledAlpha = juce::jlimit (0.0f, 1.0f, activityLevel * 5.0f); // scale to visible range
+        auto ledColour = ledAlpha > 0.05f
+            ? juce::Colour (0xff00cc66).withAlpha (0.3f + ledAlpha * 0.7f)
+            : juce::Colour (0xff333333);
+        g.setColour (ledColour);
+        g.fillEllipse (ledX, ledY, ledSize, ledSize);
+    }
+
     // Title
     g.setColour (FrutigerColours::textBright);
     g.setFont (14.0f);
     auto titleX = moduleIndex > 0 ? 34.0f : 10.0f;
-    g.drawText (title, juce::Rectangle<float> (titleX, 4.0f, bounds.getWidth() - titleX - 90.0f, 24.0f),
+    g.drawText (title, juce::Rectangle<float> (titleX, 4.0f, bounds.getWidth() - titleX - 110.0f, 24.0f),
                 juce::Justification::centredLeft);
 }
 

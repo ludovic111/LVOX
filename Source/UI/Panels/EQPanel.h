@@ -1,6 +1,7 @@
 #pragma once
 #include "../ModulePanel.h"
 #include "../../Parameters.h"
+#include "../Components/EQCurveComponent.h"
 
 class EQPanel : public ModulePanel
 {
@@ -11,6 +12,7 @@ protected:
     void layoutControls (juce::Rectangle<int> area) override;
 
 private:
+    EQCurveComponent eqCurve;
     struct BandControls
     {
         GlossyKnob freqKnob;

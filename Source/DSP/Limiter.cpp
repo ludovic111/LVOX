@@ -4,6 +4,11 @@ void LimiterModule::prepare (const juce::dsp::ProcessSpec& spec)
 {
     sampleRate = spec.sampleRate;
     gainReduction = 1.0f;
+
+    lookAheadSamples = (int) (lookAheadMs * 0.001f * sampleRate);
+    lookAheadDelay.prepare (spec);
+    lookAheadDelay.setMaximumDelayInSamples (lookAheadSamples + 1);
+    lookAheadDelay.setDelay ((float) lookAheadSamples);
 }
 
 void LimiterModule::process (juce::dsp::AudioBlock<float>& block)
@@ -19,7 +24,7 @@ void LimiterModule::process (juce::dsp::AudioBlock<float>& block)
 
     for (size_t i = 0; i < numSamples; ++i)
     {
-        // Find peak across channels
+        // Detect peak from undelayed signal (look-ahead)
         float peak = 0.0f;
         for (size_t ch = 0; ch < numChannels; ++ch)
             peak = std::max (peak, std::abs (block.getSample ((int) ch, (int) i)));
@@ -35,13 +40,19 @@ void LimiterModule::process (juce::dsp::AudioBlock<float>& block)
         else
             gainReduction = releaseCoeff * gainReduction + (1.0f - releaseCoeff) * targetGain;
 
-        // Apply
+        // Push current samples into delay, pop delayed samples, apply GR
         for (size_t ch = 0; ch < numChannels; ++ch)
-            block.setSample ((int) ch, (int) i, block.getSample ((int) ch, (int) i) * gainReduction);
+        {
+            float input = block.getSample ((int) ch, (int) i);
+            lookAheadDelay.pushSample ((int) ch, input);
+            float delayed = lookAheadDelay.popSample ((int) ch);
+            block.setSample ((int) ch, (int) i, delayed * gainReduction);
+        }
     }
 }
 
 void LimiterModule::reset()
 {
     gainReduction = 1.0f;
+    lookAheadDelay.reset();
 }

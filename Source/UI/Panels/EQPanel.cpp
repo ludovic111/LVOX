@@ -21,8 +21,11 @@ namespace
 }
 
 EQPanel::EQPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Parametric EQ", ParamIDs::eqBypass, FrutigerColours::catEQ, 4)
+    : ModulePanel (apvts, "Parametric EQ", ParamIDs::eqBypass, FrutigerColours::catEQ, 4),
+      eqCurve (apvts)
 {
+    addAndMakeVisible (eqCurve);
+
     for (int i = 0; i < 4; ++i)
     {
         auto* band = bands.add (new BandControls (juce::String (i + 1)));
@@ -44,6 +47,10 @@ EQPanel::EQPanel (juce::AudioProcessorValueTreeState& apvts)
 
 void EQPanel::layoutControls (juce::Rectangle<int> area)
 {
+    // EQ curve at top
+    eqCurve.setBounds (area.removeFromTop (100));
+    area.removeFromTop (4);
+
     auto bandWidth = area.getWidth() / 4;
 
     for (int i = 0; i < 4; ++i)

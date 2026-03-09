@@ -5,9 +5,15 @@ void DelayModule::prepare (const juce::dsp::ProcessSpec& spec)
     sampleRate = spec.sampleRate;
     delayLine.prepare (spec);
     delayLine.setMaximumDelayInSamples ((int) (sampleRate * 2.0 + 1));
-    fbLowCut.prepare (spec);
-    fbHighCut.prepare (spec);
     feedbackBuffer.resize (spec.numChannels, 0.0f);
+
+    // Prepare per-channel feedback filters
+    fbLowCutFilters.resize (spec.numChannels);
+    fbHighCutFilters.resize (spec.numChannels);
+    for (auto& f : fbLowCutFilters)
+        f.reset();
+    for (auto& f : fbHighCutFilters)
+        f.reset();
 }
 
 float DelayModule::getDelayTimeMs() const
@@ -36,14 +42,21 @@ void DelayModule::process (juce::dsp::AudioBlock<float>& block)
     delaySamples = std::clamp (delaySamples, 1.0f, (float) (sampleRate * 2.0));
     delayLine.setDelay (delaySamples);
 
-    // Update feedback filters
+    // Update feedback filter coefficients
     auto lcCoeffs = juce::dsp::IIR::Coefficients<float>::makeHighPass (sampleRate, lowCut);
-    *fbLowCut.state = *lcCoeffs;
     auto hcCoeffs = juce::dsp::IIR::Coefficients<float>::makeLowPass (sampleRate, highCut);
-    *fbHighCut.state = *hcCoeffs;
 
     const auto numChannels = block.getNumChannels();
     const auto numSamples  = block.getNumSamples();
+
+    for (size_t ch = 0; ch < numChannels; ++ch)
+    {
+        if (ch < fbLowCutFilters.size())
+        {
+            fbLowCutFilters[ch].coefficients = lcCoeffs;
+            fbHighCutFilters[ch].coefficients = hcCoeffs;
+        }
+    }
 
     for (size_t i = 0; i < numSamples; ++i)
     {
@@ -52,10 +65,13 @@ void DelayModule::process (juce::dsp::AudioBlock<float>& block)
             float input = block.getSample ((int) ch, (int) i);
             float delayed = delayLine.popSample ((int) ch);
 
-            // Feed input + feedback into delay line
+            // Apply feedback filters to the feedback signal
             float fbSample = delayed * feedback;
-            if (ch < feedbackBuffer.size())
-                feedbackBuffer[ch] = fbSample;
+            if (ch < fbLowCutFilters.size())
+            {
+                fbSample = fbLowCutFilters[ch].processSample (fbSample);
+                fbSample = fbHighCutFilters[ch].processSample (fbSample);
+            }
 
             delayLine.pushSample ((int) ch, input + fbSample);
 
@@ -63,15 +79,14 @@ void DelayModule::process (juce::dsp::AudioBlock<float>& block)
             block.setSample ((int) ch, (int) i, input + delayed * mixPct);
         }
     }
-
-    // Apply feedback filters (these will affect the next iteration's feedback path)
-    // For simplicity, we process the delay output through the filters on the next read
 }
 
 void DelayModule::reset()
 {
     delayLine.reset();
-    fbLowCut.reset();
-    fbHighCut.reset();
+    for (auto& f : fbLowCutFilters)
+        f.reset();
+    for (auto& f : fbHighCutFilters)
+        f.reset();
     std::fill (feedbackBuffer.begin(), feedbackBuffer.end(), 0.0f);
 }

@@ -39,6 +39,9 @@ void DSPChain::prepare (const juce::dsp::ProcessSpec& spec)
     for (auto* module : modules)
         module->prepare (spec);
 
+    smoothedInputGain.reset (spec.sampleRate, 0.02);   // 20ms ramp
+    smoothedOutputGain.reset (spec.sampleRate, 0.02);
+
     sendRevBuffer.setSize ((int) spec.numChannels, (int) spec.maximumBlockSize);
     sendDlyBuffer.setSize ((int) spec.numChannels, (int) spec.maximumBlockSize);
 }
@@ -79,9 +82,21 @@ void DSPChain::process (juce::AudioBuffer<float>& buffer)
 
     updateMicCorrection();
 
-    // Input gain
-    float inputGain = juce::Decibels::decibelsToGain (inputGainParam->load());
-    block.multiplyBy (inputGain);
+    // Smoothed input gain
+    smoothedInputGain.setTargetValue (juce::Decibels::decibelsToGain (inputGainParam->load()));
+    if (smoothedInputGain.isSmoothing())
+    {
+        for (size_t i = 0; i < block.getNumSamples(); ++i)
+        {
+            float g = smoothedInputGain.getNextValue();
+            for (size_t ch = 0; ch < block.getNumChannels(); ++ch)
+                block.setSample ((int) ch, (int) i, block.getSample ((int) ch, (int) i) * g);
+        }
+    }
+    else
+    {
+        block.multiplyBy (smoothedInputGain.getTargetValue());
+    }
 
     bool sendMode = sendModeParam->load() > 0.5f;
 
@@ -91,7 +106,10 @@ void DSPChain::process (juce::AudioBuffer<float>& buffer)
         for (auto* module : modules)
         {
             if (!module->isBypassed())
+            {
                 module->process (block);
+                module->updateOutputLevel (block);
+            }
         }
     }
     else
@@ -101,7 +119,10 @@ void DSPChain::process (juce::AudioBuffer<float>& buffer)
         for (int i = 0; i < 6; ++i) // modules 0-5: gate through saturation
         {
             if (!modules[i]->isBypassed())
+            {
                 modules[i]->process (block);
+                modules[i]->updateOutputLevel (block);
+            }
         }
 
         const auto numChannels = buffer.getNumChannels();
@@ -151,9 +172,21 @@ void DSPChain::process (juce::AudioBuffer<float>& buffer)
             limiter.process (block);
     }
 
-    // Output gain
-    float outputGain = juce::Decibels::decibelsToGain (outputGainParam->load());
-    block.multiplyBy (outputGain);
+    // Smoothed output gain
+    smoothedOutputGain.setTargetValue (juce::Decibels::decibelsToGain (outputGainParam->load()));
+    if (smoothedOutputGain.isSmoothing())
+    {
+        for (size_t i = 0; i < block.getNumSamples(); ++i)
+        {
+            float g = smoothedOutputGain.getNextValue();
+            for (size_t ch = 0; ch < block.getNumChannels(); ++ch)
+                block.setSample ((int) ch, (int) i, block.getSample ((int) ch, (int) i) * g);
+        }
+    }
+    else
+    {
+        block.multiplyBy (smoothedOutputGain.getTargetValue());
+    }
 }
 
 void DSPChain::reset()

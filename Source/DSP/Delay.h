@@ -34,9 +34,9 @@ private:
 
     juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Lagrange3rd> delayLine { 96000 };
 
-    using IIRFilter = juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>>;
-    IIRFilter fbLowCut;
-    IIRFilter fbHighCut;
+    // Per-channel IIR filters for sample-by-sample feedback filtering
+    std::vector<juce::dsp::IIR::Filter<float>> fbLowCutFilters;
+    std::vector<juce::dsp::IIR::Filter<float>> fbHighCutFilters;
 
     std::vector<float> feedbackBuffer;
     double sampleRate = 44100.0;

@@ -17,8 +17,17 @@ LVOXAudioProcessorEditor::LVOXAudioProcessorEditor (LVOXAudioProcessor& p)
     addAndMakeVisible (micSelector);
 
     addAndMakeVisible (modeToggle);
+    addAndMakeVisible (abToggle);
+    addAndMakeVisible (abCopy);
     addAndMakeVisible (simplePanel);
     addChildComponent (advancedPanel); // hidden initially
+
+    abToggle.onClick = [this]()
+    {
+        processorRef.switchSlot();
+        abToggle.setButtonText (processorRef.isSlotA() ? "A" : "B");
+    };
+    abCopy.onClick = [this]() { processorRef.copyAtoB(); };
 
     modeToggle.onClick = [this]()
     {
@@ -35,6 +44,7 @@ LVOXAudioProcessorEditor::LVOXAudioProcessorEditor (LVOXAudioProcessor& p)
 
     setSize (900, 500);
     startTimerHz (30);
+    setWantsKeyboardFocus (true);
 }
 
 LVOXAudioProcessorEditor::~LVOXAudioProcessorEditor()
@@ -60,6 +70,10 @@ void LVOXAudioProcessorEditor::resized()
     auto topBar = bounds.removeFromTop (36);
     topBar.reduce (8, 4);
     modeToggle.setBounds (topBar.removeFromRight (100));
+    topBar.removeFromRight (8);
+    abCopy.setBounds (topBar.removeFromRight (40));
+    topBar.removeFromRight (4);
+    abToggle.setBounds (topBar.removeFromRight (30));
     topBar.removeFromRight (8);
     micSelector.setBounds (topBar.removeFromRight (180));
     topBar.removeFromRight (8);
@@ -87,5 +101,24 @@ void LVOXAudioProcessorEditor::timerCallback()
     {
         advancedPanel.getInputMeter().setLevel (inL, inR);
         advancedPanel.getOutputMeter().setLevel (outL, outR);
+        advancedPanel.getGRMeter().setGainReduction (processorRef.getCompressorGainReduction());
+
+        for (int i = 0; i < 9; ++i)
+            advancedPanel.setModuleActivity (i, processorRef.getModuleOutputLevel (i));
     }
+}
+
+bool LVOXAudioProcessorEditor::keyPressed (const juce::KeyPress& key)
+{
+    if (key == juce::KeyPress ('z', juce::ModifierKeys::commandModifier, 0))
+    {
+        processorRef.undoManager.undo();
+        return true;
+    }
+    if (key == juce::KeyPress ('z', juce::ModifierKeys::commandModifier | juce::ModifierKeys::shiftModifier, 0))
+    {
+        processorRef.undoManager.redo();
+        return true;
+    }
+    return false;
 }

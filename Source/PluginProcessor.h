@@ -35,11 +35,32 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    juce::UndoManager undoManager;
     juce::AudioProcessorValueTreeState apvts;
     PresetManager presetManager;
 
+    // A/B comparison
+    bool isSlotA() const { return currentSlotA; }
+    void switchSlot()
+    {
+        auto& storeSlot = currentSlotA ? slotA : slotB;
+        storeSlot = apvts.copyState();
+        currentSlotA = !currentSlotA;
+        auto& loadSlot = currentSlotA ? slotA : slotB;
+        if (loadSlot.isValid())
+            apvts.replaceState (loadSlot);
+    }
+    void copyAtoB()
+    {
+        slotA = apvts.copyState();
+        slotB = slotA.createCopy();
+    }
+
     float getInputLevel() const  { return inputLevel.load(); }
     float getOutputLevel() const { return outputLevel.load(); }
+
+    float getCompressorGainReduction() const { return compGainReduction.load(); }
+    float getModuleOutputLevel (int index) const { return dspChain.getModuleOutputLevel (index); }
 
     float getInputLevelL() const  { return inputLevelL.load(); }
     float getInputLevelR() const  { return inputLevelR.load(); }
@@ -49,6 +70,11 @@ public:
 private:
     DSPChain dspChain;
 
+    bool currentSlotA = true;
+    juce::ValueTree slotA;
+    juce::ValueTree slotB;
+
+    std::atomic<float> compGainReduction { 0.0f };
     std::atomic<float> inputLevel  { 0.0f };
     std::atomic<float> outputLevel { 0.0f };
     std::atomic<float> inputLevelL  { 0.0f };

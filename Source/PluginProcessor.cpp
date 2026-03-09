@@ -5,7 +5,7 @@ LVOXAudioProcessor::LVOXAudioProcessor()
     : AudioProcessor (BusesProperties()
                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
-      apvts (*this, nullptr, "LVOX_PARAMS", createParameterLayout()),
+      apvts (*this, &undoManager, "LVOX_PARAMS", createParameterLayout()),
       presetManager (apvts),
       dspChain (apvts)
 {
@@ -20,6 +20,8 @@ void LVOXAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.maximumBlockSize = (juce::uint32) samplesPerBlock;
     spec.numChannels = (juce::uint32) getTotalNumOutputChannels();
     dspChain.prepare (spec);
+
+    setLatencySamples (dspChain.getLimiter().getLatencySamples());
 }
 
 void LVOXAudioProcessor::releaseResources()
@@ -78,6 +80,9 @@ void LVOXAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
 
     // Process DSP chain
     dspChain.process (buffer);
+
+    // Capture compressor gain reduction for UI
+    compGainReduction.store (dspChain.getCompressor().getGainReduction());
 
     // Measure output level (mono + per-channel)
     float outLevel = 0.0f;

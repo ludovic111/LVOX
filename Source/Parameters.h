@@ -25,6 +25,8 @@ namespace ParamIDs
     inline constexpr const char* deessFrequency = "deess_frequency";
     inline constexpr const char* deessThreshold = "deess_threshold";
     inline constexpr const char* deessReduction = "deess_reduction";
+    inline constexpr const char* deessAttack    = "deess_attack";
+    inline constexpr const char* deessRelease   = "deess_release";
     inline constexpr const char* deessListen    = "deess_listen";
 
     // Parametric EQ

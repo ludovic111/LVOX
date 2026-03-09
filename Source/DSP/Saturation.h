@@ -31,7 +31,13 @@ private:
 
     using IIRFilter = juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>>;
     IIRFilter toneFilter;
+    IIRFilter preEmphasis;
+    IIRFilter deEmphasis;
     double sampleRate = 44100.0;
+
+    juce::SmoothedValue<float> smoothedDrive  { 1.0f };
+    juce::SmoothedValue<float> smoothedOutput { 1.0f };
+    juce::SmoothedValue<float> smoothedMix    { 0.5f };
 
     static float processTape (float x, float drive);
     static float processTube (float x, float drive);

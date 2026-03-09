@@ -16,10 +16,16 @@ public:
     void process (juce::dsp::AudioBlock<float>& block) override;
     void reset() override;
 
+    int getLatencySamples() const { return lookAheadSamples; }
+
 private:
     std::atomic<float>* ceilingParam = nullptr;
     std::atomic<float>* releaseParam = nullptr;
 
     float gainReduction = 1.0f;
     double sampleRate = 44100.0;
+
+    juce::dsp::DelayLine<float> lookAheadDelay { 512 };
+    int lookAheadSamples = 0;
+    static constexpr float lookAheadMs = 1.0f;
 };

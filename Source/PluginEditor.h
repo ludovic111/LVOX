@@ -15,6 +15,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     void timerCallback() override;
+    bool keyPressed (const juce::KeyPress& key) override;
 
 private:
     LVOXAudioProcessor& processorRef;
@@ -29,6 +30,8 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> micSelectorAttachment;
 
     juce::TextButton modeToggle { "Advanced" };
+    juce::TextButton abToggle { "A" };
+    juce::TextButton abCopy { "A>B" };
     bool isSimpleMode = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LVOXAudioProcessorEditor)

@@ -49,7 +49,10 @@ void DeEsserModule::process (juce::dsp::AudioBlock<float>& block)
         return;
     }
 
-    const float releaseCoeff = std::exp (-1.0f / (float (sampleRate) * 0.01f));
+    const float attackMs  = attackParam->load();
+    const float releaseMs = releaseParam->load();
+    const float attackCoeff  = std::exp (-1.0f / (float (sampleRate) * attackMs * 0.001f));
+    const float releaseCoeff = std::exp (-1.0f / (float (sampleRate) * releaseMs * 0.001f));
 
     for (size_t i = 0; i < numSamples; ++i)
     {
@@ -58,7 +61,7 @@ void DeEsserModule::process (juce::dsp::AudioBlock<float>& block)
             scPeak = std::max (scPeak, std::abs (scBlock.getSample ((int) ch, (int) i)));
 
         if (scPeak > envelope)
-            envelope = scPeak;
+            envelope = attackCoeff * envelope + (1.0f - attackCoeff) * scPeak;
         else
             envelope = releaseCoeff * envelope;
 

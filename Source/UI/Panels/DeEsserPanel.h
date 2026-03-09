@@ -14,6 +14,8 @@ private:
     GlossyKnob frequencyKnob { "Frequency" };
     GlossyKnob thresholdKnob { "Threshold" };
     GlossyKnob reductionKnob { "Reduction" };
+    GlossyKnob attackKnob    { "Attack" };
+    GlossyKnob releaseKnob   { "Release" };
 
     juce::ToggleButton listenToggle { "Listen" };
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> listenAttachment;

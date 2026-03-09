@@ -37,17 +37,21 @@ The installer sets up a LaunchAgent that checks for new versions every hour. Whe
 ### DSP Processing Chain
 - **Noise Gate** — threshold, ratio, attack, release, range
 - **High-Pass Filter** — 12/24/48 dB/oct slope
-- **De-Esser** — frequency-selective compression with listen mode
-- **4-Band Parametric EQ** — peak, low shelf, high shelf per band
-- **Compressor** — sidechain HPF, soft knee, parallel compression (dry/wet mix)
-- **Saturation** — Tape / Tube / Soft Clip / Hard Clip with 2x oversampling
-- **Reverb** — room size, damping, pre-delay, lo/hi cut
-- **Delay** — free or tempo-synced, filtered feedback
-- **Output Limiter** — brickwall ceiling
+- **De-Esser** — frequency-selective compression with configurable attack/release and listen mode
+- **4-Band Parametric EQ** — peak, low shelf, high shelf per band with real-time frequency response curve
+- **Compressor** — sidechain HPF, soft knee, parallel compression, gain reduction meter
+- **Saturation** — Tape / Tube / Soft Clip / Hard Clip with 2x oversampling and frequency-dependent character
+- **Reverb** — Dattorro plate algorithm with pre-delay, damping, lo/hi cut
+- **Delay** — free or tempo-synced with filtered feedback path
+- **Output Limiter** — brickwall ceiling with 1ms look-ahead
 
 ### Two UI Modes
 - **Simple Mode** — 4 macro knobs (Warmth, Presence, Compression, Space) + one-click presets
-- **Advanced Mode** — full control over every parameter with per-module bypass
+- **Advanced Mode** — full control over every parameter with per-module bypass and activity LEDs
+
+### A/B Comparison & Undo
+- **A/B toggle** to instantly compare two different settings
+- **Undo/Redo** (Cmd+Z / Cmd+Shift+Z) for all parameter changes
 
 ### Mic Selection
 Built-in mic correction profiles that adjust DSP parameters for specific microphones:
@@ -64,7 +68,7 @@ Built-in mic correction profiles that adjust DSP parameters for specific microph
 Route reverb and delay as parallel sends with independent level control, instead of inline processing.
 
 ### Frutiger Aero Design
-Glossy translucent panels, aqua/teal colour palette, color-coded module panels, glass-like knobs with radial gradients and glow, pill switch toggles, stereo meters with peak hold.
+Glossy translucent panels, aqua/teal colour palette, color-coded module panels, glass-like knobs with value readouts, per-module activity LEDs, stereo meters with peak hold.
 
 ## Build from Source
 

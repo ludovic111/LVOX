@@ -71,7 +71,7 @@ void AdvancedModePanel::resized()
     int panelWidth = bounds.getWidth() - 20; // account for scrollbar
     int y = 4;
     int moduleHeight = 120;
-    int eqHeight = 160;
+    int eqHeight = 280;
     int gap = 10;
     int arrowGap = 14; // space for signal flow arrow
 

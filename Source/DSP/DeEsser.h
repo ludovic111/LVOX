@@ -11,6 +11,8 @@ public:
         frequencyParam = getParam (ParamIDs::deessFrequency);
         thresholdParam = getParam (ParamIDs::deessThreshold);
         reductionParam = getParam (ParamIDs::deessReduction);
+        attackParam    = getParam (ParamIDs::deessAttack);
+        releaseParam   = getParam (ParamIDs::deessRelease);
         listenParam    = getParam (ParamIDs::deessListen);
     }
 
@@ -22,6 +24,8 @@ private:
     std::atomic<float>* frequencyParam = nullptr;
     std::atomic<float>* thresholdParam = nullptr;
     std::atomic<float>* reductionParam = nullptr;
+    std::atomic<float>* attackParam    = nullptr;
+    std::atomic<float>* releaseParam   = nullptr;
     std::atomic<float>* listenParam    = nullptr;
 
     using IIRFilter = juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>>;

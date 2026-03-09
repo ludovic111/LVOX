@@ -30,6 +30,9 @@ private:
 
     std::atomic<float>* inputGainParam  = nullptr;
     std::atomic<float>* outputGainParam = nullptr;
+    std::atomic<float>* sendModeParam   = nullptr;
+    std::atomic<float>* sendRevLevelParam = nullptr;
+    std::atomic<float>* sendDlyLevelParam = nullptr;
 
     NoiseGateModule       noiseGate;
     HighPassFilterModule  highPassFilter;
@@ -42,4 +45,8 @@ private:
     LimiterModule         limiter;
 
     DSPModule* modules[9];
+
+    // Send buffers for parallel processing
+    juce::AudioBuffer<float> sendRevBuffer;
+    juce::AudioBuffer<float> sendDlyBuffer;
 };

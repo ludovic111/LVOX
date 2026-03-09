@@ -10,6 +10,7 @@
 #include "Panels/ReverbPanel.h"
 #include "Panels/DelayPanel.h"
 #include "Panels/LimiterPanel.h"
+#include "Panels/SendBusPanel.h"
 #include "Components/MeterComponent.h"
 #include "Helpers/ColourPalette.h"
 #include "Helpers/GradientUtils.h"
@@ -34,6 +35,7 @@ private:
     SaturationPanel  satPanel;
     ReverbPanel      revPanel;
     DelayPanel       dlyPanel;
+    SendBusPanel     sendPanel;
     LimiterPanel     limPanel;
 
     MeterComponent inputMeter;

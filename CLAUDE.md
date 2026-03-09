@@ -25,8 +25,15 @@ With `COPY_PLUGIN_AFTER_BUILD TRUE`, they auto-install to `~/Library/Audio/Plug-
 
 ### DSP Chain (9 modules in series, each bypassable)
 ```
+Inline mode (default):
 Input Gain → NoiseGate → HPF → DeEsser → ParametricEQ(4-band)
   → Compressor → Saturation(2x oversampled) → Reverb → Delay → Limiter → Output Gain
+
+Send mode (parallel buses):
+Input Gain → NoiseGate → HPF → DeEsser → ParametricEQ(4-band)
+  → Compressor → Saturation ──┬──────────────────→ Limiter → Output Gain
+                               ├── Send → Rev Bus ↗
+                               └── Send → Dly Bus ↗
 ```
 
 All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
@@ -37,10 +44,10 @@ All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
 `DSPChain` (Source/DSP/DSPChain.h) owns all 9 modules and sequences them in `processBlock`.
 
 ### Parameter System
-- ~90 parameters defined in `Source/Parameters.h` (IDs as `constexpr const char*`) and `Source/Parameters.cpp` (`createParameterLayout()`)
+- ~93 parameters defined in `Source/Parameters.h` (IDs as `constexpr const char*`) and `Source/Parameters.cpp` (`createParameterLayout()`)
 - All parameters use `juce::AudioProcessorValueTreeState` (APVTS)
 - State saved/restored as XML in `PluginProcessor::getStateInformation`/`setStateInformation`
-- Param ID convention: `module_param` (e.g. `comp_threshold`, `eq_band1_freq`, `rev_mix`)
+- Param ID convention: `module_param` (e.g. `comp_threshold`, `eq_band1_freq`, `rev_mix`, `send_rev_level`)
 
 ### UI
 - **Simple Mode** (900x500): 4 macro knobs (Warmth, Presence, Compression, Space) that map to underlying DSP params. Macro mapping runs on a 15Hz timer in `SimpleModePanel::applyMacros()`.
@@ -49,7 +56,7 @@ All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
 
 ### Preset System
 - `PresetManager` (Source/Preset/PresetManager.h): saves/loads XML presets
-- Factory presets: Podcast, Rap Vocal, Singing Lead, Background Vocal, Radio Voice
+- Factory presets: Podcast, Rap Vocal, Singing Lead, Background Vocal, Radio Voice, Lo-Fi Vocal, Bright Pop, Intimate ASMR, Aggressive Rock, Choir Stack, Telephone, Dreamy Ethereal, RnB Smooth
 - User presets directory: `~/Library/Application Support/LVOX/Presets/`
 
 ## Key Files
@@ -67,7 +74,7 @@ All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
 | `Source/UI/SimpleModePanel.h/.cpp` | Simple mode with macro knobs |
 | `Source/UI/AdvancedModePanel.h/.cpp` | Advanced mode with scrollable module panels |
 | `Source/UI/ModulePanel.h/.cpp` | Base class for per-module panels |
-| `Source/UI/Panels/*.h/.cpp` | 9 concrete module panel UIs |
+| `Source/UI/Panels/*.h/.cpp` | 10 concrete module panel UIs (9 DSP + SendBus) |
 | `Source/UI/Components/*.h/.cpp` | GlossyKnob, GlowButton, MacroKnob, PresetSelector, MeterComponent |
 | `Source/Preset/PresetManager.h/.cpp` | Preset save/load/factory creation |
 

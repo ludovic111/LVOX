@@ -9,6 +9,7 @@ AdvancedModePanel::AdvancedModePanel (juce::AudioProcessorValueTreeState& apvts)
       satPanel (apvts),
       revPanel (apvts),
       dlyPanel (apvts),
+      sendPanel (apvts),
       limPanel (apvts)
 {
     contentContainer.addAndMakeVisible (gatePanel);
@@ -17,6 +18,7 @@ AdvancedModePanel::AdvancedModePanel (juce::AudioProcessorValueTreeState& apvts)
     contentContainer.addAndMakeVisible (eqPanel);
     contentContainer.addAndMakeVisible (compPanel);
     contentContainer.addAndMakeVisible (satPanel);
+    contentContainer.addAndMakeVisible (sendPanel);
     contentContainer.addAndMakeVisible (revPanel);
     contentContainer.addAndMakeVisible (dlyPanel);
     contentContainer.addAndMakeVisible (limPanel);
@@ -69,6 +71,7 @@ void AdvancedModePanel::resized()
     placeModule (eqPanel, eqHeight);
     placeModule (compPanel, moduleHeight);
     placeModule (satPanel, moduleHeight);
+    placeModule (sendPanel, 80);
     placeModule (revPanel, moduleHeight);
     placeModule (dlyPanel, moduleHeight);
     placeModule (limPanel, 80);

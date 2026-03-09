@@ -146,6 +146,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
         groups.push_back (std::move (g));
     }
 
+    // ---- Send/Bus ----
+    {
+        auto g = std::make_unique<AudioProcessorParameterGroup> ("send", "Send/Bus", "|");
+        g->addChild (std::make_unique<AudioParameterBool>  (ParameterID { ParamIDs::sendMode, 1 },     "Send Mode", false));
+        g->addChild (std::make_unique<AudioParameterFloat> (ParameterID { ParamIDs::sendRevLevel, 1 }, "Send Rev Level", NormalisableRange<float> (0.0f, 100.0f, 0.1f), 30.0f, AudioParameterFloatAttributes().withLabel ("%")));
+        g->addChild (std::make_unique<AudioParameterFloat> (ParameterID { ParamIDs::sendDlyLevel, 1 }, "Send Dly Level", NormalisableRange<float> (0.0f, 100.0f, 0.1f), 20.0f, AudioParameterFloatAttributes().withLabel ("%")));
+        groups.push_back (std::move (g));
+    }
+
     // ---- Macros (Simple Mode) ----
     {
         auto g = std::make_unique<AudioProcessorParameterGroup> ("macros", "Macros", "|");

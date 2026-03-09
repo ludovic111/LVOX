@@ -51,6 +51,7 @@ target_sources(LVOX PRIVATE
     Source/UI/Panels/SaturationPanel.cpp
     Source/UI/Panels/ReverbPanel.cpp
     Source/UI/Panels/DelayPanel.cpp
+    Source/UI/Panels/SendBusPanel.cpp
     Source/UI/Panels/LimiterPanel.cpp
     Source/UI/Components/GlossyKnob.cpp
     Source/UI/Components/GlowButton.cpp

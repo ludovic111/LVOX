@@ -98,6 +98,11 @@ namespace ParamIDs
     inline constexpr const char* limCeiling = "lim_ceiling";
     inline constexpr const char* limRelease = "lim_release";
 
+    // Send/Bus
+    inline constexpr const char* sendMode     = "send_mode";
+    inline constexpr const char* sendRevLevel = "send_rev_level";
+    inline constexpr const char* sendDlyLevel = "send_dly_level";
+
     // Macro (Simple Mode)
     inline constexpr const char* macroWarmth      = "macro_warmth";
     inline constexpr const char* macroPresence    = "macro_presence";

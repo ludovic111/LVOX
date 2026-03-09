@@ -1,0 +1,43 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=$(sed -n 's/^project(LVOX VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Configure
+        run: cmake -B build -G Xcode -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+
+      - name: Build Release
+        run: cmake --build build --config Release
+
+      - name: Package
+        run: |
+          cd build/LVOX_artefacts/Release
+          ditto -c -k --keepParent VST3/LVOX.vst3 LVOX-VST3-${{ steps.version.outputs.tag }}.zip
+          ditto -c -k --keepParent AU/LVOX.component LVOX-AU-${{ steps.version.outputs.tag }}.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: LVOX ${{ steps.version.outputs.tag }}
+          files: |
+            build/LVOX_artefacts/Release/LVOX-VST3-${{ steps.version.outputs.tag }}.zip
+            build/LVOX_artefacts/Release/LVOX-AU-${{ steps.version.outputs.tag }}.zip
+          make_latest: true

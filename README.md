@@ -1,8 +1,36 @@
 # LVOX
 
-A professional vocal mixing plugin for **FL Studio** and **Logic Pro**.
+A professional vocal mixing plugin for **FL Studio** (VST3) and **Logic Pro** (AU).
 
 LVOX handles the full vocal processing chain — everything from noise gate to limiter — in a single plugin with a sleek **Frutiger Aero** interface.
+
+## Install (Pre-Built)
+
+### One-Line Install
+
+```bash
+curl -sL https://raw.githubusercontent.com/ludovic111/LVOX/master/scripts/install-remote.sh | bash
+```
+
+This downloads the latest universal binary (Intel + Apple Silicon), installs it, and sets up hourly auto-updates.
+
+### Manual Download
+
+Download the latest release from the [Releases page](https://github.com/ludovic111/LVOX/releases/latest), unzip, and copy:
+
+- `LVOX.vst3` → `~/Library/Audio/Plug-Ins/VST3/`
+- `LVOX.component` → `~/Library/Audio/Plug-Ins/Components/`
+
+Then remove quarantine: `xattr -cr ~/Library/Audio/Plug-Ins/VST3/LVOX.vst3`
+
+## Auto-Updates
+
+The installer sets up a LaunchAgent that checks for new versions every hour. When an update is found, it downloads and installs automatically (only when your DAW isn't using the plugin).
+
+- **Logs:** `~/Library/Logs/LVOX/update.log`
+- **Check manually:** `/usr/local/bin/lvox-update`
+- **Disable:** `launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.ludovicmarie.lvox.updater.plist`
+- **Uninstall:** `curl -sL https://raw.githubusercontent.com/ludovic111/LVOX/master/scripts/uninstall.sh | bash`
 
 ## Features
 
@@ -18,26 +46,33 @@ LVOX handles the full vocal processing chain — everything from noise gate to l
 - **Output Limiter** — brickwall ceiling
 
 ### Two UI Modes
-- **Simple Mode** — 4 macro knobs (Warmth, Presence, Compression, Space) + one-click voice presets
+- **Simple Mode** — 4 macro knobs (Warmth, Presence, Compression, Space) + one-click presets
 - **Advanced Mode** — full control over every parameter with per-module bypass
 
-### Factory Presets
-- Podcast
-- Rap Vocal
-- Singing Lead
-- Background Vocal
-- Radio Voice
+### Mic Selection
+Built-in mic correction profiles that adjust DSP parameters for specific microphones:
+- **UAD Sphere LX (C800 sim)** — HPF, de-esser, EQ, compressor, and saturation offsets
+- **Shure MV7** — de-esser, EQ, compressor, and saturation offsets
+
+### 26 Factory Presets
+
+**Generic:** Podcast, Rap Vocal, Singing Lead, Background Vocal, Radio Voice, Lo-Fi Vocal, Bright Pop, Intimate ASMR, Aggressive Rock, Choir Stack, Telephone, Dreamy Ethereal, RnB Smooth
+
+**Artist:** Drake, Travis Scott, The Weeknd, Billie Eilish, Adele, Beyonce, Kanye West, Post Malone, Frank Ocean, Ariana Grande, Juice WRLD, 21 Savage, Tyler The Creator
+
+### Send/Bus Parallel Routing
+Route reverb and delay as parallel sends with independent level control, instead of inline processing.
 
 ### Frutiger Aero Design
-Glossy translucent panels, aqua/teal colour palette, glass-like knobs with specular highlights, soft glow effects.
+Glossy translucent panels, aqua/teal colour palette, color-coded module panels, glass-like knobs with radial gradients and glow, pill switch toggles, stereo meters with peak hold.
 
-## Build
+## Build from Source
 
 Requires **CMake 3.22+** and **Xcode** on macOS.
 
 ```bash
 # Clone with submodules
-git clone --recursive https://github.com/ludovicmarie/LVOX.git
+git clone --recursive https://github.com/ludovic111/LVOX.git
 cd LVOX
 
 # Configure and build

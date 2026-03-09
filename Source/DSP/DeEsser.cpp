@@ -9,10 +9,17 @@ void DeEsserModule::prepare (const juce::dsp::ProcessSpec& spec)
 
 void DeEsserModule::process (juce::dsp::AudioBlock<float>& block)
 {
-    const float freq      = frequencyParam->load();
-    const float threshDB  = thresholdParam->load();
-    const float maxRedDB  = reductionParam->load();
+    float freq      = frequencyParam->load();
+    float threshDB  = thresholdParam->load();
+    float maxRedDB  = reductionParam->load();
     const bool  listen    = listenParam->load() > 0.5f;
+
+    if (micCorrection != nullptr)
+    {
+        freq     = juce::jlimit (2000.0f, 12000.0f, freq + micCorrection->deessFreqOffset);
+        threshDB = juce::jlimit (-40.0f, 0.0f, threshDB + micCorrection->deessThreshOffset);
+        maxRedDB = juce::jlimit (0.0f, 24.0f, maxRedDB + micCorrection->deessReductionOffset);
+    }
 
     const float threshold = juce::Decibels::decibelsToGain (threshDB);
     const float q = 2.0f;

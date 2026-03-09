@@ -33,7 +33,9 @@ float SaturationModule::processHardClip (float x, float drive)
 
 void SaturationModule::process (juce::dsp::AudioBlock<float>& block)
 {
-    const float drivePct = driveParam->load();
+    float drivePct = driveParam->load();
+    if (micCorrection != nullptr)
+        drivePct = juce::jlimit (0.0f, 100.0f, drivePct + micCorrection->satDriveOffset);
     const int   type     = (int) typeParam->load();
     const float tone     = toneParam->load();
     const float mixPct   = mixParam->load() / 100.0f;

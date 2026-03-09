@@ -1,7 +1,7 @@
 #include "NoiseGatePanel.h"
 
 NoiseGatePanel::NoiseGatePanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Noise Gate", ParamIDs::gateBypass)
+    : ModulePanel (apvts, "Noise Gate", ParamIDs::gateBypass, FrutigerColours::catDynamics, 1)
 {
     addAndMakeVisible (thresholdKnob);
     addAndMakeVisible (ratioKnob);

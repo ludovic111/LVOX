@@ -16,6 +16,9 @@ SimpleModePanel::SimpleModePanel (juce::AudioProcessorValueTreeState& apvts)
     addAndMakeVisible (inputMeter);
     addAndMakeVisible (outputMeter);
 
+    inputMeter.setLabel ("IN");
+    outputMeter.setLabel ("OUT");
+
     startTimerHz (15);
 }
 
@@ -69,26 +72,57 @@ void SimpleModePanel::paint (juce::Graphics& g)
     auto bounds = getLocalBounds().toFloat();
     GradientUtils::drawGlossyPanel (g, bounds, 12.0f);
 
-    // Title
-    g.setColour (FrutigerColours::textBright);
-    g.setFont (20.0f);
-    g.drawText ("LVOX", bounds.removeFromTop (40), juce::Justification::centred);
+    // Branding area
+    auto titleArea = bounds.removeFromTop (55);
+
+    // "LVOX" with aqua gradient, larger font
+    g.setFont (28.0f);
+    g.setGradientFill (GradientUtils::makeAquaGradient (titleArea));
+    g.drawText ("LVOX", titleArea.removeFromTop (36), juce::Justification::centred);
+
+    // "VOCAL PROCESSOR" subtitle
+    g.setColour (FrutigerColours::textDim);
+    g.setFont (11.0f);
+    g.drawText ("VOCAL PROCESSOR", titleArea, juce::Justification::centred);
+
+    // Subtle category-colored background tints behind each macro knob
+    auto knobArea = getLocalBounds().reduced (16);
+    knobArea.removeFromTop (55); // past title
+    knobArea.removeFromLeft (28); // past meter
+    knobArea.removeFromRight (28);
+    auto knobW = knobArea.getWidth() / 4;
+    knobArea = knobArea.reduced (0, 10);
+
+    struct MacroTint { juce::Colour colour; };
+    MacroTint tints[] = {
+        { FrutigerColours::catSaturation }, // Warmth
+        { FrutigerColours::catEQ },         // Presence
+        { FrutigerColours::catDynamics },   // Compression
+        { FrutigerColours::catEffects }     // Space
+    };
+
+    for (int i = 0; i < 4; ++i)
+    {
+        auto kb = knobArea.removeFromLeft (knobW);
+        g.setColour (tints[i].colour.withAlpha (0.06f));
+        g.fillRoundedRectangle (kb.toFloat().reduced (4.0f), 8.0f);
+    }
 }
 
 void SimpleModePanel::resized()
 {
     auto bounds = getLocalBounds().reduced (16);
-    bounds.removeFromTop (40); // title space
+    bounds.removeFromTop (55); // title + subtitle space
 
     // Meters on sides
-    inputMeter.setBounds (bounds.removeFromLeft (16));
-    bounds.removeFromLeft (12);
-    outputMeter.setBounds (bounds.removeFromRight (16));
-    bounds.removeFromRight (12);
+    inputMeter.setBounds (bounds.removeFromLeft (20));
+    bounds.removeFromLeft (8);
+    outputMeter.setBounds (bounds.removeFromRight (20));
+    bounds.removeFromRight (8);
 
     // 4 macro knobs centered
     auto knobWidth = bounds.getWidth() / 4;
-    auto knobArea = bounds.reduced (0, 20);
+    auto knobArea = bounds.reduced (0, 10);
 
     warmthKnob.setBounds      (knobArea.removeFromLeft (knobWidth));
     presenceKnob.setBounds    (knobArea.removeFromLeft (knobWidth));

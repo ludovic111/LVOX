@@ -11,9 +11,15 @@ void CompressorModule::prepare (const juce::dsp::ProcessSpec& spec)
 void CompressorModule::process (juce::dsp::AudioBlock<float>& block)
 {
     const float threshDB  = thresholdParam->load();
-    const float ratio     = ratioParam->load();
-    const float attackMs  = attackParam->load();
+    float ratio     = ratioParam->load();
+    float attackMs  = attackParam->load();
     const float releaseMs = releaseParam->load();
+
+    if (micCorrection != nullptr)
+    {
+        ratio    = juce::jlimit (1.0f, 20.0f, ratio + micCorrection->compRatioOffset);
+        attackMs = juce::jlimit (0.1f, 200.0f, attackMs + micCorrection->compAttackOffset);
+    }
     const float kneeDB    = kneeParam->load();
     const float makeupDB  = makeupParam->load();
     const float scFreq    = scFreqParam->load();

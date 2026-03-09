@@ -155,6 +155,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
         groups.push_back (std::move (g));
     }
 
+    // ---- Mic Select ----
+    {
+        auto g = std::make_unique<AudioProcessorParameterGroup> ("mic", "Mic Select", "|");
+        g->addChild (std::make_unique<AudioParameterChoice> (ParameterID { ParamIDs::micSelect, 1 }, "Mic Select", StringArray { "None", "UAD Sphere LX (C800)", "Shure MV7" }, 0));
+        groups.push_back (std::move (g));
+    }
+
     // ---- Macros (Simple Mode) ----
     {
         auto g = std::make_unique<AudioProcessorParameterGroup> ("macros", "Macros", "|");

@@ -29,26 +29,40 @@ AdvancedModePanel::AdvancedModePanel (juce::AudioProcessorValueTreeState& apvts)
 
     addAndMakeVisible (inputMeter);
     addAndMakeVisible (outputMeter);
+
+    inputMeter.setLabel ("IN");
+    outputMeter.setLabel ("OUT");
 }
 
 void AdvancedModePanel::paint (juce::Graphics& g)
 {
     g.fillAll (FrutigerColours::backgroundDark);
 
-    g.setColour (FrutigerColours::textBright);
-    g.setFont (20.0f);
-    g.drawText ("LVOX - Advanced", getLocalBounds().removeFromTop (36), juce::Justification::centred);
+    // Styled header with gradient text
+    auto headerBounds = getLocalBounds().removeFromTop (36).toFloat();
+
+    // "LVOX" gradient text
+    g.setFont (22.0f);
+    g.setGradientFill (GradientUtils::makeAquaGradient (headerBounds));
+    g.drawText ("LVOX", headerBounds.withWidth (80.0f).withX (headerBounds.getCentreX() - 70.0f),
+                juce::Justification::centredRight);
+
+    // "ADVANCED" subtitle
+    g.setColour (FrutigerColours::textDim);
+    g.setFont (12.0f);
+    g.drawText ("ADVANCED", headerBounds.withWidth (100.0f).withX (headerBounds.getCentreX() - 70.0f + 85.0f),
+                juce::Justification::centredLeft);
 }
 
 void AdvancedModePanel::resized()
 {
     auto bounds = getLocalBounds();
-    auto header = bounds.removeFromTop (36);
+    bounds.removeFromTop (36);
 
     // Meters on sides
-    inputMeter.setBounds (bounds.removeFromLeft (16));
+    inputMeter.setBounds (bounds.removeFromLeft (20));
     bounds.removeFromLeft (4);
-    outputMeter.setBounds (bounds.removeFromRight (16));
+    outputMeter.setBounds (bounds.removeFromRight (20));
     bounds.removeFromRight (4);
 
     viewport.setBounds (bounds);
@@ -58,11 +72,17 @@ void AdvancedModePanel::resized()
     int y = 4;
     int moduleHeight = 120;
     int eqHeight = 160;
+    int gap = 10;
+    int arrowGap = 14; // space for signal flow arrow
 
-    auto placeModule = [&] (juce::Component& comp, int height)
+    auto placeModule = [&] (juce::Component& comp, int height, bool drawArrow = true)
     {
         comp.setBounds (4, y, panelWidth, height);
-        y += height + 6;
+        y += height;
+        if (drawArrow)
+            y += arrowGap;
+        else
+            y += gap;
     };
 
     placeModule (gatePanel, moduleHeight);
@@ -74,7 +94,30 @@ void AdvancedModePanel::resized()
     placeModule (sendPanel, 80);
     placeModule (revPanel, moduleHeight);
     placeModule (dlyPanel, moduleHeight);
-    placeModule (limPanel, 80);
+    placeModule (limPanel, 80, false);
 
     contentContainer.setSize (panelWidth + 8, y);
+}
+
+void AdvancedModePanel::paintOverChildren (juce::Graphics& g)
+{
+    // Draw signal flow arrows between panels in the viewport
+    auto viewPos = viewport.getViewPosition();
+    auto vpBounds = viewport.getBounds();
+    float cx = vpBounds.getX() + vpBounds.getWidth() * 0.5f;
+
+    // Get positions of each module panel and draw arrows between them
+    juce::Component* panels[] = { &gatePanel, &hpfPanel, &deesserPanel, &eqPanel,
+                                   &compPanel, &satPanel, &sendPanel, &revPanel,
+                                   &dlyPanel, &limPanel };
+
+    for (int i = 0; i < 9; ++i)
+    {
+        auto panelBottom = panels[i]->getBottom() - viewPos.y + vpBounds.getY();
+        auto nextTop = panels[i + 1]->getY() - viewPos.y + vpBounds.getY();
+        auto arrowY = (panelBottom + nextTop) * 0.5f;
+
+        if (arrowY > vpBounds.getY() && arrowY < vpBounds.getBottom())
+            GradientUtils::drawSignalFlowArrow (g, cx, arrowY);
+    }
 }

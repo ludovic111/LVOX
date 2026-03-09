@@ -1,7 +1,7 @@
 #include "LimiterPanel.h"
 
 LimiterPanel::LimiterPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Limiter", ParamIDs::limBypass)
+    : ModulePanel (apvts, "Limiter", ParamIDs::limBypass, FrutigerColours::catDynamics, 9)
 {
     addAndMakeVisible (ceilingKnob);
     addAndMakeVisible (releaseKnob);

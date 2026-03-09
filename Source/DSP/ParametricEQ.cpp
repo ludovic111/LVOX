@@ -14,6 +14,19 @@ void ParametricEQModule::updateBand (Band& band)
     float q    = band.qParam->load();
     int type   = (int) band.typeParam->load();
 
+    if (micCorrection != nullptr)
+    {
+        float offset = 0.0f;
+        switch (band.index)
+        {
+            case 0: offset = micCorrection->eqBand1GainOffset; break;
+            case 1: offset = micCorrection->eqBand2GainOffset; break;
+            case 2: offset = micCorrection->eqBand3GainOffset; break;
+            case 3: offset = micCorrection->eqBand4GainOffset; break;
+        }
+        gain = juce::jlimit (-18.0f, 18.0f, gain + offset);
+    }
+
     juce::ReferenceCountedObjectPtr<juce::dsp::IIR::Coefficients<float>> coeffs;
 
     switch (type)

@@ -18,6 +18,7 @@ DSPChain::DSPChain (juce::AudioProcessorValueTreeState& apvts)
     sendModeParam     = apvts.getRawParameterValue (ParamIDs::sendMode);
     sendRevLevelParam = apvts.getRawParameterValue (ParamIDs::sendRevLevel);
     sendDlyLevelParam = apvts.getRawParameterValue (ParamIDs::sendDlyLevel);
+    micSelectParam    = apvts.getRawParameterValue (ParamIDs::micSelect);
 
     modules[0] = &noiseGate;
     modules[1] = &highPassFilter;
@@ -28,6 +29,9 @@ DSPChain::DSPChain (juce::AudioProcessorValueTreeState& apvts)
     modules[6] = &reverbModule;
     modules[7] = &delayModule;
     modules[8] = &limiter;
+
+    for (auto* module : modules)
+        module->setMicCorrection (&micCorrection);
 }
 
 void DSPChain::prepare (const juce::dsp::ProcessSpec& spec)
@@ -39,9 +43,41 @@ void DSPChain::prepare (const juce::dsp::ProcessSpec& spec)
     sendDlyBuffer.setSize ((int) spec.numChannels, (int) spec.maximumBlockSize);
 }
 
+void DSPChain::updateMicCorrection()
+{
+    int micIndex = (int) micSelectParam->load();
+    MicCorrection mc;
+
+    if (micIndex == 1) // UAD Sphere LX (C800)
+    {
+        mc.hpfFreqOffset        = 20.0f;
+        mc.deessFreqOffset      = 1000.0f;
+        mc.deessThreshOffset    = -4.0f;
+        mc.deessReductionOffset = 3.0f;
+        mc.eqBand3GainOffset    = -2.0f;
+        mc.eqBand4GainOffset    = 2.0f;
+        mc.compAttackOffset     = 2.0f;
+        mc.satDriveOffset       = -8.0f;
+    }
+    else if (micIndex == 2) // Shure MV7
+    {
+        mc.deessThreshOffset    = 4.0f;
+        mc.deessReductionOffset = -2.0f;
+        mc.eqBand2GainOffset    = -1.5f;
+        mc.eqBand3GainOffset    = 3.0f;
+        mc.compRatioOffset      = 1.0f;
+        mc.compAttackOffset     = -3.0f;
+        mc.satDriveOffset       = 10.0f;
+    }
+
+    micCorrection = mc;
+}
+
 void DSPChain::process (juce::AudioBuffer<float>& buffer)
 {
     juce::dsp::AudioBlock<float> block (buffer);
+
+    updateMicCorrection();
 
     // Input gain
     float inputGain = juce::Decibels::decibelsToGain (inputGainParam->load());

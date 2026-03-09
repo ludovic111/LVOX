@@ -21,7 +21,7 @@ namespace
 }
 
 EQPanel::EQPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Parametric EQ", ParamIDs::eqBypass)
+    : ModulePanel (apvts, "Parametric EQ", ParamIDs::eqBypass, FrutigerColours::catEQ, 4)
 {
     for (int i = 0; i < 4; ++i)
     {

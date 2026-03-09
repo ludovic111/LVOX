@@ -1,6 +1,7 @@
 #pragma once
 #include <juce_dsp/juce_dsp.h>
 #include <juce_audio_processors/juce_audio_processors.h>
+#include "MicCorrection.h"
 
 class DSPModule
 {
@@ -23,7 +24,10 @@ public:
         return bypassParam != nullptr && bypassParam->load() > 0.5f;
     }
 
+    void setMicCorrection (const MicCorrection* mc) { micCorrection = mc; }
+
 protected:
+    const MicCorrection* micCorrection = nullptr;
     juce::AudioProcessorValueTreeState& apvts;
     std::atomic<float>* bypassParam = nullptr;
 

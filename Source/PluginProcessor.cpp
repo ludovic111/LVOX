@@ -49,11 +49,22 @@ void LVOXAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // Measure input level
+    // Measure input level (mono + per-channel)
     float inLevel = 0.0f;
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
         inLevel = std::max (inLevel, buffer.getMagnitude (ch, 0, buffer.getNumSamples()));
     inputLevel.store (inLevel);
+
+    if (buffer.getNumChannels() >= 2)
+    {
+        inputLevelL.store (buffer.getMagnitude (0, 0, buffer.getNumSamples()));
+        inputLevelR.store (buffer.getMagnitude (1, 0, buffer.getNumSamples()));
+    }
+    else if (buffer.getNumChannels() == 1)
+    {
+        inputLevelL.store (buffer.getMagnitude (0, 0, buffer.getNumSamples()));
+        inputLevelR.store (inputLevelL.load());
+    }
 
     // Get host BPM
     if (auto* playHead = getPlayHead())
@@ -68,11 +79,22 @@ void LVOXAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     // Process DSP chain
     dspChain.process (buffer);
 
-    // Measure output level
+    // Measure output level (mono + per-channel)
     float outLevel = 0.0f;
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
         outLevel = std::max (outLevel, buffer.getMagnitude (ch, 0, buffer.getNumSamples()));
     outputLevel.store (outLevel);
+
+    if (buffer.getNumChannels() >= 2)
+    {
+        outputLevelL.store (buffer.getMagnitude (0, 0, buffer.getNumSamples()));
+        outputLevelR.store (buffer.getMagnitude (1, 0, buffer.getNumSamples()));
+    }
+    else if (buffer.getNumChannels() == 1)
+    {
+        outputLevelL.store (buffer.getMagnitude (0, 0, buffer.getNumSamples()));
+        outputLevelR.store (outputLevelL.load());
+    }
 }
 
 juce::AudioProcessorEditor* LVOXAudioProcessor::createEditor()

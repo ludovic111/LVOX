@@ -25,6 +25,9 @@ private:
     AdvancedModePanel advancedPanel;
     PresetSelector    presetSelector;
 
+    juce::ComboBox micSelector;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> micSelectorAttachment;
+
     juce::TextButton modeToggle { "Advanced" };
     bool isSimpleMode = true;
 

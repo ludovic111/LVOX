@@ -1,7 +1,7 @@
 #include "DeEsserPanel.h"
 
 DeEsserPanel::DeEsserPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "De-Esser", ParamIDs::deessBypass)
+    : ModulePanel (apvts, "De-Esser", ParamIDs::deessBypass, FrutigerColours::catFilter, 3)
 {
     addAndMakeVisible (frequencyKnob);
     addAndMakeVisible (thresholdKnob);

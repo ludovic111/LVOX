@@ -1,7 +1,7 @@
 #include "SaturationPanel.h"
 
 SaturationPanel::SaturationPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Saturation", ParamIDs::satBypass)
+    : ModulePanel (apvts, "Saturation", ParamIDs::satBypass, FrutigerColours::catSaturation, 6)
 {
     addAndMakeVisible (driveKnob);
     addAndMakeVisible (toneKnob);

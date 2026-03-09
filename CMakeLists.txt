@@ -27,6 +27,7 @@ target_sources(LVOX PRIVATE
     Source/Parameters.cpp
 
     # DSP
+    Source/DSP/MicCorrection.h
     Source/DSP/DSPChain.cpp
     Source/DSP/NoiseGate.cpp
     Source/DSP/HighPassFilter.cpp

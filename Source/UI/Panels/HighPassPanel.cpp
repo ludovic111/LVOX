@@ -1,7 +1,7 @@
 #include "HighPassPanel.h"
 
 HighPassPanel::HighPassPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "High-Pass Filter", ParamIDs::hpfBypass)
+    : ModulePanel (apvts, "High-Pass Filter", ParamIDs::hpfBypass, FrutigerColours::catFilter, 2)
 {
     addAndMakeVisible (frequencyKnob);
     addAndMakeVisible (slopeBox);

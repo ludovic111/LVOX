@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include "Parameters.h"
 
 LVOXAudioProcessorEditor::LVOXAudioProcessorEditor (LVOXAudioProcessor& p)
     : AudioProcessorEditor (p),
@@ -10,6 +11,11 @@ LVOXAudioProcessorEditor::LVOXAudioProcessorEditor (LVOXAudioProcessor& p)
     setLookAndFeel (&frutigerLookAndFeel);
 
     addAndMakeVisible (presetSelector);
+
+    micSelector.addItemList ({ "No Mic", "UAD Sphere LX (C800)", "Shure MV7" }, 1);
+    micSelectorAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (p.apvts, ParamIDs::micSelect, micSelector);
+    addAndMakeVisible (micSelector);
+
     addAndMakeVisible (modeToggle);
     addAndMakeVisible (simplePanel);
     addChildComponent (advancedPanel); // hidden initially
@@ -50,10 +56,12 @@ void LVOXAudioProcessorEditor::resized()
 {
     auto bounds = getLocalBounds();
 
-    // Top bar: preset selector + mode toggle
+    // Top bar: preset selector + mic selector + mode toggle
     auto topBar = bounds.removeFromTop (36);
     topBar.reduce (8, 4);
     modeToggle.setBounds (topBar.removeFromRight (100));
+    topBar.removeFromRight (8);
+    micSelector.setBounds (topBar.removeFromRight (180));
     topBar.removeFromRight (8);
     presetSelector.setBounds (topBar);
 
@@ -65,17 +73,19 @@ void LVOXAudioProcessorEditor::resized()
 
 void LVOXAudioProcessorEditor::timerCallback()
 {
-    float inLevel  = processorRef.getInputLevel();
-    float outLevel = processorRef.getOutputLevel();
+    float inL = processorRef.getInputLevelL();
+    float inR = processorRef.getInputLevelR();
+    float outL = processorRef.getOutputLevelL();
+    float outR = processorRef.getOutputLevelR();
 
     if (isSimpleMode)
     {
-        simplePanel.getInputMeter().setLevel (inLevel);
-        simplePanel.getOutputMeter().setLevel (outLevel);
+        simplePanel.getInputMeter().setLevel (inL, inR);
+        simplePanel.getOutputMeter().setLevel (outL, outR);
     }
     else
     {
-        advancedPanel.getInputMeter().setLevel (inLevel);
-        advancedPanel.getOutputMeter().setLevel (outLevel);
+        advancedPanel.getInputMeter().setLevel (inL, inR);
+        advancedPanel.getOutputMeter().setLevel (outL, outR);
     }
 }

@@ -2,6 +2,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_dsp/juce_dsp.h>
 #include "DSPModule.h"
+#include "MicCorrection.h"
 #include "NoiseGate.h"
 #include "HighPassFilter.h"
 #include "DeEsser.h"
@@ -49,4 +50,9 @@ private:
     // Send buffers for parallel processing
     juce::AudioBuffer<float> sendRevBuffer;
     juce::AudioBuffer<float> sendDlyBuffer;
+
+    // Mic correction
+    std::atomic<float>* micSelectParam = nullptr;
+    MicCorrection micCorrection;
+    void updateMicCorrection();
 };

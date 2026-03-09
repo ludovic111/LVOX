@@ -103,6 +103,9 @@ namespace ParamIDs
     inline constexpr const char* sendRevLevel = "send_rev_level";
     inline constexpr const char* sendDlyLevel = "send_dly_level";
 
+    // Mic Select
+    inline constexpr const char* micSelect = "mic_select";
+
     // Macro (Simple Mode)
     inline constexpr const char* macroWarmth      = "macro_warmth";
     inline constexpr const char* macroPresence    = "macro_presence";

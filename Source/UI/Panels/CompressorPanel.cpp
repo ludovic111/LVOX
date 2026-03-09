@@ -1,7 +1,7 @@
 #include "CompressorPanel.h"
 
 CompressorPanel::CompressorPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Compressor", ParamIDs::compBypass)
+    : ModulePanel (apvts, "Compressor", ParamIDs::compBypass, FrutigerColours::catDynamics, 5)
 {
     addAndMakeVisible (thresholdKnob);
     addAndMakeVisible (ratioKnob);

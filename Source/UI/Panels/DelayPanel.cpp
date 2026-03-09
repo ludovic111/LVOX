@@ -1,7 +1,7 @@
 #include "DelayPanel.h"
 
 DelayPanel::DelayPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Delay", ParamIDs::dlyBypass)
+    : ModulePanel (apvts, "Delay", ParamIDs::dlyBypass, FrutigerColours::catEffects, 8)
 {
     addAndMakeVisible (timeKnob);
     addAndMakeVisible (feedbackKnob);

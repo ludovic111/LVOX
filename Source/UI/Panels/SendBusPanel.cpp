@@ -1,7 +1,7 @@
 #include "SendBusPanel.h"
 
 SendBusPanel::SendBusPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Send / Bus", ParamIDs::sendMode)
+    : ModulePanel (apvts, "Send / Bus", ParamIDs::sendMode, FrutigerColours::catEffects, 0)
 {
     addAndMakeVisible (revSendKnob);
     addAndMakeVisible (dlySendKnob);

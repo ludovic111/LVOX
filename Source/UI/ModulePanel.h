@@ -9,7 +9,10 @@
 class ModulePanel : public juce::Component
 {
 public:
-    ModulePanel (juce::AudioProcessorValueTreeState& apvts, const juce::String& title, const juce::String& bypassParamID);
+    ModulePanel (juce::AudioProcessorValueTreeState& apvts, const juce::String& title,
+                 const juce::String& bypassParamID,
+                 juce::Colour categoryColour = FrutigerColours::aquaDark,
+                 int moduleIndex = 0);
 
     void paint (juce::Graphics& g) override;
     void resized() override;
@@ -18,6 +21,8 @@ protected:
     juce::AudioProcessorValueTreeState& apvts;
     juce::String title;
     GlowButton bypassButton;
+    juce::Colour categoryColour;
+    int moduleIndex;
 
     virtual void layoutControls (juce::Rectangle<int> area) = 0;
 };

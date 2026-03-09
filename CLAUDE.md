@@ -40,23 +40,29 @@ All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
 - `prepare(ProcessSpec)`, `process(AudioBlock)`, `reset()`
 - `isBypassed()` via atomic param read
 - `getParam(id)` helper to get `std::atomic<float>*` from APVTS
+- `setMicCorrection(const MicCorrection*)` for mic-specific DSP offsets
 
 `DSPChain` (Source/DSP/DSPChain.h) owns all 9 modules and sequences them in `processBlock`.
 
 ### Parameter System
-- ~93 parameters defined in `Source/Parameters.h` (IDs as `constexpr const char*`) and `Source/Parameters.cpp` (`createParameterLayout()`)
+- ~94 parameters defined in `Source/Parameters.h` (IDs as `constexpr const char*`) and `Source/Parameters.cpp` (`createParameterLayout()`)
 - All parameters use `juce::AudioProcessorValueTreeState` (APVTS)
 - State saved/restored as XML in `PluginProcessor::getStateInformation`/`setStateInformation`
 - Param ID convention: `module_param` (e.g. `comp_threshold`, `eq_band1_freq`, `rev_mix`, `send_rev_level`)
+- `mic_select` param: AudioParameterChoice with "None", "UAD Sphere LX (C800)", "Shure MV7"
 
 ### UI
 - **Simple Mode** (900x500): 4 macro knobs (Warmth, Presence, Compression, Space) that map to underlying DSP params. Macro mapping runs on a 15Hz timer in `SimpleModePanel::applyMacros()`.
 - **Advanced Mode** (1100x700): Scrollable viewport with 9 `ModulePanel` subclasses, each with `GlossyKnob`/`GlowButton` components attached to APVTS via `SliderAttachment`/`ButtonAttachment`.
+- **Mic Selector** in top bar (ComboBox between preset selector and mode toggle)
 - **Frutiger Aero** styling: `FrutigerAeroLookAndFeel` (LookAndFeel_V4 subclass), colour constants in `ColourPalette.h`, gradient helpers in `GradientUtils.h`.
+- **GUI Polish**: Color-coded module panels (blue=dynamics, teal=filter, green=EQ, amber=saturation, purple=effects), enhanced knobs with radial gradients/glow/shadow, pill switch toggles, stereo meters with peak hold, signal flow arrows between modules, styled branding.
 
 ### Preset System
 - `PresetManager` (Source/Preset/PresetManager.h): saves/loads XML presets
-- Factory presets: Podcast, Rap Vocal, Singing Lead, Background Vocal, Radio Voice, Lo-Fi Vocal, Bright Pop, Intimate ASMR, Aggressive Rock, Choir Stack, Telephone, Dreamy Ethereal, RnB Smooth
+- Factory presets (26 total):
+  - Generic: Podcast, Rap Vocal, Singing Lead, Background Vocal, Radio Voice, Lo-Fi Vocal, Bright Pop, Intimate ASMR, Aggressive Rock, Choir Stack, Telephone, Dreamy Ethereal, RnB Smooth
+  - Artist: Drake, Travis Scott, The Weeknd, Billie Eilish, Adele, Beyonce, Kanye West, Post Malone, Frank Ocean, Ariana Grande, Juice WRLD, 21 Savage, Tyler The Creator
 - User presets directory: `~/Library/Application Support/LVOX/Presets/`
 
 ## Key Files
@@ -65,12 +71,13 @@ All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
 | `CMakeLists.txt` | Plugin target, JUCE modules, build config |
 | `Source/Parameters.h/.cpp` | All param IDs + createParameterLayout() |
 | `Source/PluginProcessor.h/.cpp` | AudioProcessor: owns APVTS, DSPChain, PresetManager |
-| `Source/PluginEditor.h/.cpp` | Editor: mode toggle, preset selector, meters |
+| `Source/PluginEditor.h/.cpp` | Editor: mode toggle, preset selector, mic selector, meters |
 | `Source/DSP/DSPModule.h` | Abstract base for all DSP modules |
+| `Source/DSP/MicCorrection.h` | Mic correction offset struct |
 | `Source/DSP/DSPChain.h/.cpp` | Sequences all 9 modules |
 | `Source/DSP/*.h/.cpp` | Individual DSP modules (NoiseGate, HPF, DeEsser, ParametricEQ, Compressor, Saturation, LVOXReverb, Delay, Limiter) |
 | `Source/UI/FrutigerAeroLookAndFeel.h/.cpp` | Custom Frutiger Aero LookAndFeel |
-| `Source/UI/Helpers/ColourPalette.h` | Colour constants (aqua, teal, glow, glass) |
+| `Source/UI/Helpers/ColourPalette.h` | Colour constants (aqua, teal, glow, glass, category colours) |
 | `Source/UI/SimpleModePanel.h/.cpp` | Simple mode with macro knobs |
 | `Source/UI/AdvancedModePanel.h/.cpp` | Advanced mode with scrollable module panels |
 | `Source/UI/ModulePanel.h/.cpp` | Base class for per-module panels |
@@ -83,6 +90,13 @@ All modules inherit from `DSPModule` (Source/DSP/DSPModule.h) which provides:
 - **Presence** → eq_band3_gain (hi-mid boost), eq_band3_q, sat_tone
 - **Compression** → comp_threshold, comp_ratio, comp_attack, comp_release, comp_makeup
 - **Space** → rev_mix, rev_size, rev_predelay, dly_mix, dly_feedback, dly_time
+
+## Mic Correction System
+- `MicCorrection` struct in `Source/DSP/MicCorrection.h` holds per-mic offset values
+- `DSPChain::updateMicCorrection()` fills the struct based on `mic_select` param (0=None, 1=UAD Sphere LX, 2=Shure MV7)
+- All DSP modules receive a pointer to the struct via `setMicCorrection()` and apply offsets when processing
+- UAD Sphere LX (C800 sim): +20Hz HPF, +1kHz de-esser freq, -4dB de-esser thresh, -2dB EQ3, +2dB EQ4 (air), +2ms comp attack, -8% sat drive
+- Shure MV7: +4dB de-esser thresh, -2dB de-esser reduction, -1.5dB EQ2 (cut mud), +3dB EQ3 (presence), +1 comp ratio, -3ms comp attack, +10% sat drive
 
 ## Conventions
 - JUCE is a git submodule in `./JUCE/`

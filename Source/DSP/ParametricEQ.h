@@ -21,6 +21,7 @@ public:
             bands[i].qParam      = getParam (qIDs[i]);
             bands[i].typeParam   = getParam (typeIDs[i]);
             bands[i].activeParam = getParam (activeIDs[i]);
+            bands[i].index       = i;
         }
     }
 
@@ -36,6 +37,7 @@ private:
         std::atomic<float>* qParam      = nullptr;
         std::atomic<float>* typeParam   = nullptr;
         std::atomic<float>* activeParam = nullptr;
+        int index = 0;
 
         juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> filter;
     };

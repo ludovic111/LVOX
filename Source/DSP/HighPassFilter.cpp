@@ -12,6 +12,8 @@ void HighPassFilterModule::prepare (const juce::dsp::ProcessSpec& spec)
 void HighPassFilterModule::updateFilters()
 {
     float freq = frequencyParam->load();
+    if (micCorrection != nullptr)
+        freq = juce::jlimit (20.0f, 500.0f, freq + micCorrection->hpfFreqOffset);
     float slope = slopeParam->load();
 
     if (freq == lastFreq && slope == lastSlope)

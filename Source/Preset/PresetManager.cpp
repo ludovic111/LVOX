@@ -9,7 +9,10 @@ PresetManager::PresetManager (juce::AudioProcessorValueTreeState& apvts) : apvts
 
     factoryPresetNames = { "Podcast", "Rap Vocal", "Singing Lead", "Background Vocal", "Radio Voice",
                            "Lo-Fi Vocal", "Bright Pop", "Intimate ASMR", "Aggressive Rock",
-                           "Choir Stack", "Telephone", "Dreamy Ethereal", "RnB Smooth" };
+                           "Choir Stack", "Telephone", "Dreamy Ethereal", "RnB Smooth",
+                           "Drake", "Travis Scott", "The Weeknd", "Billie Eilish", "Adele",
+                           "Beyonce", "Kanye West", "Post Malone", "Frank Ocean",
+                           "Ariana Grande", "Juice WRLD", "21 Savage", "Tyler The Creator" };
     createFactoryPresets();
 }
 
@@ -234,6 +237,233 @@ void PresetManager::createFactoryPresets()
         setParam (ParamIDs::eqBand3Freq, 3500.0f);
         setParam (ParamIDs::revPredelay, 35.0f);
         savePreset ("RnB Smooth");
+    }
+
+    // Drake preset — dark, punchy, OVO-style vocal
+    if (!getPresetFile ("Drake").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 65.0f);
+        setParam (ParamIDs::macroPresence, 45.0f);
+        setParam (ParamIDs::macroCompression, 75.0f);
+        setParam (ParamIDs::macroSpace, 25.0f);
+        setParam (ParamIDs::satType, 1.0f); // Tube
+        setParam (ParamIDs::satDrive, 35.0f);
+        setParam (ParamIDs::satMix, 50.0f);
+        setParam (ParamIDs::eqBand4Gain, -2.0f); // dark top
+        setParam (ParamIDs::compRatio, 5.0f);
+        setParam (ParamIDs::compAttack, 5.0f);
+        setParam (ParamIDs::compRelease, 80.0f);
+        savePreset ("Drake");
+    }
+
+    // Travis Scott preset — atmospheric, spacey, autotuned vibe
+    if (!getPresetFile ("Travis Scott").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 70.0f);
+        setParam (ParamIDs::macroPresence, 65.0f);
+        setParam (ParamIDs::macroCompression, 85.0f);
+        setParam (ParamIDs::macroSpace, 75.0f);
+        setParam (ParamIDs::satType, 2.0f); // Soft Clip
+        setParam (ParamIDs::satDrive, 40.0f);
+        setParam (ParamIDs::satMix, 55.0f);
+        setParam (ParamIDs::revSize, 75.0f);
+        setParam (ParamIDs::revMix, 80.0f);
+        setParam (ParamIDs::dlyTime, 375.0f);
+        setParam (ParamIDs::dlyFeedback, 45.0f);
+        setParam (ParamIDs::dlyMix, 35.0f);
+        savePreset ("Travis Scott");
+    }
+
+    // The Weeknd preset — smooth, warm, R&B darkness
+    if (!getPresetFile ("The Weeknd").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 60.0f);
+        setParam (ParamIDs::macroPresence, 40.0f);
+        setParam (ParamIDs::macroCompression, 60.0f);
+        setParam (ParamIDs::macroSpace, 30.0f);
+        setParam (ParamIDs::satType, 1.0f); // Tube
+        setParam (ParamIDs::satDrive, 30.0f);
+        setParam (ParamIDs::satMix, 45.0f);
+        setParam (ParamIDs::eqBand4Gain, -1.5f); // warm dark top
+        setParam (ParamIDs::eqBand1Gain, 2.0f);
+        setParam (ParamIDs::compRatio, 3.0f);
+        setParam (ParamIDs::compAttack, 10.0f);
+        savePreset ("The Weeknd");
+    }
+
+    // Billie Eilish preset — whisper-close, intimate, minimal
+    if (!getPresetFile ("Billie Eilish").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 30.0f);
+        setParam (ParamIDs::macroPresence, 35.0f);
+        setParam (ParamIDs::macroCompression, 40.0f);
+        setParam (ParamIDs::macroSpace, 5.0f);
+        setParam (ParamIDs::satType, 0.0f); // Tape
+        setParam (ParamIDs::satDrive, 15.0f);
+        setParam (ParamIDs::satMix, 30.0f);
+        setParam (ParamIDs::compRatio, 2.5f);
+        setParam (ParamIDs::compAttack, 12.0f);
+        setParam (ParamIDs::gateThreshold, -55.0f);
+        savePreset ("Billie Eilish");
+    }
+
+    // Adele preset — natural, powerful, dynamic
+    if (!getPresetFile ("Adele").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 50.0f);
+        setParam (ParamIDs::macroPresence, 55.0f);
+        setParam (ParamIDs::macroCompression, 30.0f);
+        setParam (ParamIDs::macroSpace, 20.0f);
+        setParam (ParamIDs::satType, 1.0f); // Tube
+        setParam (ParamIDs::satDrive, 20.0f);
+        setParam (ParamIDs::satMix, 35.0f);
+        setParam (ParamIDs::compRatio, 2.0f);
+        setParam (ParamIDs::compAttack, 25.0f);
+        setParam (ParamIDs::compRelease, 150.0f);
+        setParam (ParamIDs::eqBand1Gain, 1.5f);
+        savePreset ("Adele");
+    }
+
+    // Beyonce preset — bright, powerful, polished
+    if (!getPresetFile ("Beyonce").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 35.0f);
+        setParam (ParamIDs::macroPresence, 75.0f);
+        setParam (ParamIDs::macroCompression, 65.0f);
+        setParam (ParamIDs::macroSpace, 15.0f);
+        setParam (ParamIDs::satType, 0.0f); // Tape
+        setParam (ParamIDs::satDrive, 25.0f);
+        setParam (ParamIDs::satMix, 40.0f);
+        setParam (ParamIDs::eqBand3Freq, 4500.0f);
+        setParam (ParamIDs::eqBand3Gain, 3.5f);
+        setParam (ParamIDs::eqBand4Gain, 2.0f); // air
+        setParam (ParamIDs::compRatio, 4.0f);
+        setParam (ParamIDs::compAttack, 8.0f);
+        savePreset ("Beyonce");
+    }
+
+    // Kanye West preset — aggressive, saturated, in-your-face
+    if (!getPresetFile ("Kanye West").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 80.0f);
+        setParam (ParamIDs::macroPresence, 70.0f);
+        setParam (ParamIDs::macroCompression, 85.0f);
+        setParam (ParamIDs::macroSpace, 10.0f);
+        setParam (ParamIDs::satType, 3.0f); // Hard Clip
+        setParam (ParamIDs::satDrive, 70.0f);
+        setParam (ParamIDs::satMix, 60.0f);
+        setParam (ParamIDs::eqBand3Gain, 4.0f); // aggressive presence
+        setParam (ParamIDs::compRatio, 6.0f);
+        setParam (ParamIDs::compAttack, 3.0f);
+        setParam (ParamIDs::compRelease, 60.0f);
+        savePreset ("Kanye West");
+    }
+
+    // Post Malone preset — warm, atmospheric, laid-back
+    if (!getPresetFile ("Post Malone").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 60.0f);
+        setParam (ParamIDs::macroPresence, 50.0f);
+        setParam (ParamIDs::macroCompression, 70.0f);
+        setParam (ParamIDs::macroSpace, 40.0f);
+        setParam (ParamIDs::satType, 1.0f); // Tube
+        setParam (ParamIDs::satDrive, 35.0f);
+        setParam (ParamIDs::satMix, 45.0f);
+        setParam (ParamIDs::revSize, 60.0f);
+        setParam (ParamIDs::revMix, 40.0f);
+        setParam (ParamIDs::dlyTime, 300.0f);
+        setParam (ParamIDs::dlyFeedback, 30.0f);
+        setParam (ParamIDs::dlyMix, 25.0f);
+        setParam (ParamIDs::compRatio, 4.0f);
+        savePreset ("Post Malone");
+    }
+
+    // Frank Ocean preset — dreamy, lo-fi warmth, spacious
+    if (!getPresetFile ("Frank Ocean").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 50.0f);
+        setParam (ParamIDs::macroPresence, 40.0f);
+        setParam (ParamIDs::macroCompression, 45.0f);
+        setParam (ParamIDs::macroSpace, 60.0f);
+        setParam (ParamIDs::satType, 0.0f); // Tape
+        setParam (ParamIDs::satDrive, 25.0f);
+        setParam (ParamIDs::satMix, 40.0f);
+        setParam (ParamIDs::revSize, 80.0f);
+        setParam (ParamIDs::revMix, 55.0f);
+        setParam (ParamIDs::dlyTime, 500.0f);
+        setParam (ParamIDs::dlyFeedback, 40.0f);
+        setParam (ParamIDs::dlyMix, 30.0f);
+        setParam (ParamIDs::compRatio, 2.5f);
+        savePreset ("Frank Ocean");
+    }
+
+    // Ariana Grande preset — bright pop, airy, clean
+    if (!getPresetFile ("Ariana Grande").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 30.0f);
+        setParam (ParamIDs::macroPresence, 80.0f);
+        setParam (ParamIDs::macroCompression, 60.0f);
+        setParam (ParamIDs::macroSpace, 25.0f);
+        setParam (ParamIDs::eqBand4Gain, 3.0f); // air
+        setParam (ParamIDs::eqBand3Gain, 2.5f);
+        setParam (ParamIDs::eqBand3Freq, 4500.0f);
+        setParam (ParamIDs::deessThreshold, -16.0f);
+        setParam (ParamIDs::compRatio, 3.5f);
+        setParam (ParamIDs::compAttack, 8.0f);
+        setParam (ParamIDs::hpfFrequency, 100.0f);
+        savePreset ("Ariana Grande");
+    }
+
+    // Juice WRLD preset — emotional, spacious, melodic
+    if (!getPresetFile ("Juice WRLD").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 50.0f);
+        setParam (ParamIDs::macroPresence, 55.0f);
+        setParam (ParamIDs::macroCompression, 65.0f);
+        setParam (ParamIDs::macroSpace, 70.0f);
+        setParam (ParamIDs::revSize, 70.0f);
+        setParam (ParamIDs::revMix, 75.0f);
+        setParam (ParamIDs::revDamping, 40.0f);
+        setParam (ParamIDs::dlyTime, 350.0f);
+        setParam (ParamIDs::dlyFeedback, 45.0f);
+        setParam (ParamIDs::dlyMix, 35.0f);
+        setParam (ParamIDs::compRatio, 3.5f);
+        savePreset ("Juice WRLD");
+    }
+
+    // 21 Savage preset — dark, tight, minimal, punchy
+    if (!getPresetFile ("21 Savage").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 55.0f);
+        setParam (ParamIDs::macroPresence, 40.0f);
+        setParam (ParamIDs::macroCompression, 80.0f);
+        setParam (ParamIDs::macroSpace, 5.0f);
+        setParam (ParamIDs::compRatio, 6.0f);
+        setParam (ParamIDs::compAttack, 3.0f);
+        setParam (ParamIDs::compRelease, 60.0f);
+        setParam (ParamIDs::eqBand4Gain, -3.0f); // dark
+        setParam (ParamIDs::eqBand1Gain, 1.5f);
+        setParam (ParamIDs::satDrive, 30.0f);
+        setParam (ParamIDs::satType, 1.0f); // Tube
+        savePreset ("21 Savage");
+    }
+
+    // Tyler The Creator preset — vintage, warm, character
+    if (!getPresetFile ("Tyler The Creator").exists())
+    {
+        setParam (ParamIDs::macroWarmth, 70.0f);
+        setParam (ParamIDs::macroPresence, 55.0f);
+        setParam (ParamIDs::macroCompression, 55.0f);
+        setParam (ParamIDs::macroSpace, 20.0f);
+        setParam (ParamIDs::satType, 1.0f); // Tube
+        setParam (ParamIDs::satDrive, 45.0f);
+        setParam (ParamIDs::satMix, 50.0f);
+        setParam (ParamIDs::satTone, -10.0f); // warm tone
+        setParam (ParamIDs::eqBand1Gain, 2.5f);
+        setParam (ParamIDs::eqBand3Gain, 2.0f);
+        setParam (ParamIDs::compRatio, 3.0f);
+        setParam (ParamIDs::compAttack, 10.0f);
+        savePreset ("Tyler The Creator");
     }
 }
 

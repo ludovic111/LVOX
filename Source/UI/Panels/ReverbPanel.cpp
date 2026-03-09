@@ -1,7 +1,7 @@
 #include "ReverbPanel.h"
 
 ReverbPanel::ReverbPanel (juce::AudioProcessorValueTreeState& apvts)
-    : ModulePanel (apvts, "Reverb", ParamIDs::revBypass)
+    : ModulePanel (apvts, "Reverb", ParamIDs::revBypass, FrutigerColours::catEffects, 7)
 {
     addAndMakeVisible (sizeKnob);
     addAndMakeVisible (dampingKnob);

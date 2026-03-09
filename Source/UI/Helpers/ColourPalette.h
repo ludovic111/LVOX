@@ -39,4 +39,17 @@ namespace FrutigerColours
     // Module status
     inline const juce::Colour bypassedColour   { 0xFF555555 };
     inline const juce::Colour activeColour     { 0xFF4AC6E8 };
+
+    // Module category colors
+    inline const juce::Colour catDynamics      { 0xFF4A90D9 };  // blue — Gate, Comp, Limiter
+    inline const juce::Colour catFilter        { 0xFF5CC9A7 };  // teal — HPF, DeEsser
+    inline const juce::Colour catEQ            { 0xFF7AD48E };  // green — EQ
+    inline const juce::Colour catSaturation    { 0xFFD4A04A };  // amber — Saturation
+    inline const juce::Colour catEffects       { 0xFFA97AD4 };  // purple — Reverb, Delay, Send
+
+    // Enhanced rendering
+    inline const juce::Colour knobShadow       { 0x66000000 };
+    inline const juce::Colour knobRing         { 0xFF3A8CA8 };
+    inline const juce::Colour meterBg          { 0xFF0A1520 };
+    inline const juce::Colour textValue        { 0xFFB0E0FF };
 }

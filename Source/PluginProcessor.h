@@ -41,11 +41,20 @@ public:
     float getInputLevel() const  { return inputLevel.load(); }
     float getOutputLevel() const { return outputLevel.load(); }
 
+    float getInputLevelL() const  { return inputLevelL.load(); }
+    float getInputLevelR() const  { return inputLevelR.load(); }
+    float getOutputLevelL() const { return outputLevelL.load(); }
+    float getOutputLevelR() const { return outputLevelR.load(); }
+
 private:
     DSPChain dspChain;
 
     std::atomic<float> inputLevel  { 0.0f };
     std::atomic<float> outputLevel { 0.0f };
+    std::atomic<float> inputLevelL  { 0.0f };
+    std::atomic<float> inputLevelR  { 0.0f };
+    std::atomic<float> outputLevelL { 0.0f };
+    std::atomic<float> outputLevelR { 0.0f };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LVOXAudioProcessor)
 };
